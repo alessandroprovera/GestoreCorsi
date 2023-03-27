@@ -7,9 +7,13 @@ package it.polito.tdp.corsi;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.corsi.model.Corso;
+import it.polito.tdp.corsi.model.Studente;
+import it.polito.tdp.corsi.model.Divisione;
 import it.polito.tdp.corsi.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,16 +84,63 @@ public class FXMLController {
 
     @FXML
     void numeroStudenti(ActionEvent event) {
+    	String input = txtPeriodo.getText();
+    	int inputNum = 0;
+    	
+    	try {
+    		inputNum = Integer.parseInt(input);
+    	} catch (NumberFormatException e) {
+			// TODO: handle exception
+    		txtRisultato.setText("Inserted Value is not an integer value");
+    		return;
+		}
+    	
+    	if (inputNum < 1 || inputNum >2) {
+    		txtRisultato.setText("Inserted 1 or 2");
+    		return;
+    	}
+    	
+    	Map<Corso,Integer> result = new HashMap<Corso,Integer>();
+    	result = this.model.getCorsiIscritti(inputNum);
+    	this.txtRisultato.clear();
+    	
+    	for(Corso c: result.keySet()) {
+    		this.txtRisultato.appendText(c.getCodins() +": "+ result.get(c) + " studenti\n");
+    	}
     	
     }
 
     @FXML
     void stampaDivisione(ActionEvent event) {
+    	String input = txtCorso.getText();
+    	if(input.isEmpty()) {
+    		this.txtRisultato.setText("Inserire il codice di un corso\n");
+    		return;
+    	}
+    	List<Divisione> result = new ArrayList<Divisione>();
+    	result = this.model.getNStudentiByCDS(input);
+    	this.txtRisultato.clear();
+    	
+    	for(Divisione d: result) {
+    		this.txtRisultato.appendText(d.toString()+"\n");
+    	}
 
     }
 
     @FXML
     void stampaStudenti(ActionEvent event) {
+    	String input = txtCorso.getText();
+    	if(input.isEmpty()) {
+    		this.txtRisultato.setText("Inserire il codice di un corso\n");
+    		return;
+    	}
+    	List<Studente> result = new ArrayList<Studente>();
+    	result = this.model.getStudentiByCorso(input);
+    	this.txtRisultato.clear();
+    	
+    	for(Studente s: result) {
+    		this.txtRisultato.appendText(s.toString()+"\n");
+    	}
 
     }
 
